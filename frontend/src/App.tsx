@@ -111,7 +111,17 @@ function Practice() {
   const submit = async () => { const r = await api.post(`/practice/${s.session_id}/submit`, { answers: ans }); setRes(r.data); setS(null); };
   useEffect(() => { if (!s || mode !== "timed") return; if (left <= 0) { submit(); return; } const t = setTimeout(() => setLeft(left - 1), 1000); return () => clearTimeout(t); }, [left, s]);
   if (res) return <div><h1 className="text-3xl font-black">Result: {res.score}/{res.total} ({res.percentage}%)</h1><p>Correct {res.correct} · Incorrect {res.incorrect} · Skipped {res.skipped} · Accuracy {res.accuracy}% · {res.time_taken_s}s</p>
-    {res.review.map((q: any, n: number) => <div key={q.id} className={`nb p-3 mt-3 ${q.status === "correct" ? "bg-pop-mint" : q.status === "incorrect" ? "bg-pop-pink" : "bg-white"}`}><b>{n + 1}. {q.text}</b><p>Your answer: {q.selected.map((x: number) => q.options[x]).join(", ") || "skipped"}</p><p>Correct: {q.answer.map((x: number) => q.options[x]).join(", ")}</p>{q.explanation && <p className="text-sm">{q.explanation}</p>}</div>)}
+    {res.review.map((q: any, n: number) => <div key={q.id} className={`nb p-3 mt-3 ${q.status === "correct" ? "bg-pop-mint" : q.status === "incorrect" ? "bg-pop-pink" : "bg-white"}`}>
+      <b>{n + 1}. {q.text}</b>
+      <p>Your answer: {q.selected.map((x: number) => q.options[x]).join(", ") || "skipped"}</p>
+      <p>Correct: {q.answer.map((x: number) => q.options[x]).join(", ")}</p>
+      <div className="mt-2 space-y-1">
+        {q.options.map((option: string, i: number) => <div key={i} className={`rounded-md border-2 border-ink px-2 py-1 ${q.answer.includes(i) ? "bg-pop-mint text-green-950" : q.selected.includes(i) ? "bg-pop-pink text-red-950" : "bg-white"}`}>
+          {String.fromCharCode(65 + i)}. {option}
+        </div>)}
+      </div>
+      {q.explanation && <p className={`text-sm mt-2 p-2 rounded-md border-2 border-ink ${q.status === "correct" ? "bg-pop-mint text-green-950" : "bg-pop-pink text-red-950"}`}><b>Explanation:</b> {q.explanation}</p>}
+    </div>)}
     <button className="btn mt-4" onClick={() => setRes(null)}>Back</button></div>;
   if (s) { const q = s.questions[i], multi = q.qtype === "multiple", cur = ans[q.id] || [];
     const pick = (k: number) => setAns({ ...ans, [q.id]: multi ? (cur.includes(k) ? cur.filter((x) => x !== k) : [...cur, k]) : [k] });
