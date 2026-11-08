@@ -34,6 +34,9 @@ cd frontend && cp .env.example .env && npm i && npm run dev   # http://localhost
 ```
 6. **Tests**: `cd backend && pytest`. Frontend check: `cd frontend && npm run build`.
 
+## Render deployment
+The repository includes [render.yaml](./render.yaml) and [backend/Dockerfile](./backend/Dockerfile) for deploying the FastAPI backend as a Render Docker web service. Create the service from the Blueprint, then provide the `DATABASE_URL`, AI keys, admin credentials, `FRONTEND_URL`, and S3 credentials as Render environment variables. The container runs `alembic upgrade head` before starting Uvicorn and listens on Render's `PORT`.
+
 ## Content workflow (log in as the admin, open Admin in the sidebar)
 1. Subjects & Years: add an academic year; enable subjects.
 2. Syllabus: upload PDF/DOCX (lines starting with "Unit"/"Chapter" become units, which you then edit as JSON) -> Save, publish & activate.

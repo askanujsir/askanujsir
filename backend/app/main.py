@@ -21,4 +21,7 @@ async def lifespan(app):
     yield
 app = FastAPI(title="askanujsir", lifespan=lifespan)
 app.add_middleware(CORSMiddleware, allow_origins=[settings.FRONTEND_URL], allow_methods=["*"], allow_headers=["*"])
+@app.get("/health")
+def health():
+    return {"status": "ok"}
 for m in (auth, users, subjects, chat, practice, dashboard, admin, sample_papers, community, leaderboard): app.include_router(m.r)
